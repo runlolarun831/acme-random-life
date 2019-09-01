@@ -1,0 +1,13 @@
+Basic Goals
+When a button is clicked, add a randomly generated item to the corresponding category
+   -make a button that creates an item on click
+  -creates a list item w/ a detroy button
+Allow the user to destroy each item
+
+no routes. video example stays on same page
+look at week 9 for examples
+10fetchUsers-
+
+notes first
+followings
+vacations

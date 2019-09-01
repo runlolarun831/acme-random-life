@@ -45,11 +45,19 @@
             error: ''
           };
         }
+        //this is where the data first comes in -set state
         async componentDidMount(){
           const user = await fetchUser();
+          const notes = (await axios.get(`${API}/users/${user.id}/notes`)).data;
+          console.log(user);
+          console.log(notes);
           this.setState({
-            user
+            user,
+            notes
           });
+          console.log(this.state);
+
+
         }
         render(){
           const { error, user, companies, vacations, followingCompanies, notes } = this.state;
@@ -58,6 +66,9 @@
               <h1>The Acme Random Life</h1>
               Welcome { user.fullName } to your Random Life!
               <div className='error'>{ error }</div>
+
+
+
             </div>
           );
         }
