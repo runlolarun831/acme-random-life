@@ -41,7 +41,16 @@
           <div>
             <h2>notes ({ notes.length })</h2>
             <button onClick={ notes.create }>Add a Random Note</button>
-
+            {
+              notes.map( (note, idx)  => {
+                return (
+                  <div key={notes.id}>
+                    {note.text}
+                    <button>Destroy</button>
+                  </div>
+                );
+              })
+            }
 
           </div>
         )
