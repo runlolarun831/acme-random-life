@@ -12,3 +12,13 @@ notes first
 followings
 vacations
 
+            {
+              notes.map( (note, idx)  => {
+                return (
+                  <div key={user.id}>
+                    {note}
+                    <button>Destroy</button>
+                  </div>
+                );
+              })
+            }

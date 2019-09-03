@@ -40,12 +40,13 @@
         return (
           <div>
             <h2>notes ({ notes.length })</h2>
-            <button onClick={ notes.create }>Add a Random Note</button>
+            <button onClick={ ()=> create }>Add a Random Note</button>
             {
               notes.map( (note, idx)  => {
                 return (
-                  <div key={notes.id}>
-                    {note.text}
+                  <div key={note.id}>
+                    <div>{note.text}</div>
+                    <div>hmmm?</div>
                     <button>Destroy</button>
                   </div>
                 );
@@ -77,6 +78,14 @@
           console.log('begin user',user);
           let notes = (await axios.get(`${API}/users/${user.id}/notes`)).data;
           console.log('begin notes',notes);
+          // ///put this in create...this only appears on 2nd refresh if 1st load is less than 5 or less
+          // const fakerNote = faker.hacker.phrase();
+          // //console.log('this is note', fakerNote);
+          // const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
+          // console.log('newNote', note.text)
+          // this.setState( { notes: [...this.state.notes, note ] },
+          //   );
+
           this.setState({ notes });
           this.setState({
             user,
@@ -86,21 +95,22 @@
         }
 
         //create new note by pulling note for Faker
+        //put this in create...this only appears on 2nd refresh if 1st load is less than 5 or less
         async create(){
-          const FakerNote = faker.hacker.phrase();
-          console.log('this is note', fakerNote);
-          const note = (await axios.post(`${API}/users/${user.id}/notes`, { text: `${fakerNote}`})).data;
-          console.log('newNote', note.text)
-        //   this.setState( { notes: [...this.state.notes, note ] };
-        //     );
-        //   this.setState({ notes });
-        //   console.log(this.state);
+        const fakerNote = faker.hacker.phrase();
+        //console.log('this is note', fakerNote);
+        const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
+        console.log('newNote', note.text)
+        this.setState( { notes: [...this.state.notes, note ] },
+          );
+
+
+          // this.setState({ notes });
+          //  console.log(this.state);
          }
-          //code to create and new Note -need to move it to another component
-          //const fakerNote = faker.hacker.phrase();//test if it works
-          //console.log('this is note', fakerNote);
-          //const note = (await axios.post(`${API}/users/${user.id}/notes`, { text: `${fakerNote}`})).data;
-          //console.log('newNote', note.text)
+
+
+
 
 
 
