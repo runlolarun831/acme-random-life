@@ -33,7 +33,7 @@
         return  user;
       };
 
-      const Note = ({user, notes, error, create})=> {
+      const Note = ({user, notes, error, AddNote, destroyNote})=> {
         //{user, notes,error, create} = this.state;
         console.log('notes in Note',{notes});
         console.log('error in Note', {error});
@@ -46,7 +46,7 @@
                   <div key={note.id}>
                     <div>{note.text}</div>
                     <div>hmmm?</div>
-                    <button>Destroy</button>
+                    <button onClick={ ()=> destroyNote(notes) }>Destroy</button>
                   </div>
                 );
               })
@@ -93,32 +93,29 @@
           console.log('Begin of State', this.state);
         }
 
-        //create new note by pulling note for Faker
-        //put this in create...this only appears on 2nd refresh(if in CDM) if 1st load is less than 5 or less
-        // async create(){
-        // const fakerNote = faker.hacker.phrase();
-        // console.log('this is note', fakerNote);
-        // const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
-        // console.log('newNote', note.text)
-        // this.setState( { notes: [...this.state.notes, note ] },
-        //   );
-        //   this.setState({ notes });
-        //    console.log(this.state);
-        // }
-
-        addNote = async() => {
+        addNote = async({user}) => {
+          user = this.state;
+          console.log({user});
           const fakerNote = faker.hacker.phrase();
           console.log('this is note', fakerNote);
-          const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
-          console.log('newNote', note.text)
+          const note = (await axios.post(`${API}/users/${user.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
+          console.log('newNote', note.text);
           this.setState( { notes: [...this.state.notes, note ] });
-          this.setState({ notes });
+          //this.setState({ notes });
           console.log(this.state);
+         }
+
+         destroyNote = async({user, notes}) => {
+          user = this.state;
+          console.log({user});
+          console.log('notes in destroyNote', {notes});
+          await axios.delete(`${API}/users/${user.user.id}/notes/{ notes[0].id }`);
+
          }
 
         render(){
           const { error, user, companies, vacations, followingCompanies, notes } = this.state;
-          const { addNote } = this;
+          const { addNote, destroyNote } = this;
           console.log('render', this.state);
 
           return (
@@ -127,7 +124,7 @@
               Welcome { user.fullName } to your Random Life!
               <div className='error'>{ error }</div>
               <h2>notes ({ notes.length })</h2>
-              <button onClick={ ()=> addNote.notes }>Add a Random Note</button>
+              <button onClick={ ()=> addNote(notes) }>Add a Random Note</button>
               <Note user = { user } notes = { notes } error = { error} />
             </div>
           );
