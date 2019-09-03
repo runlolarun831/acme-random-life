@@ -34,13 +34,12 @@
       };
 
       const Note = ({user, notes, error, create})=> {
+        //{user, notes,error, create} = this.state;
         console.log('notes in Note',{notes});
         console.log('error in Note', {error});
         console.log('user in Note',{user});
         return (
           <div>
-            <h2>notes ({ notes.length })</h2>
-            <button onClick={ ()=> create }>Add a Random Note</button>
             {
               notes.map( (note, idx)  => {
                 return (
@@ -52,7 +51,6 @@
                 );
               })
             }
-
           </div>
         )
        };
@@ -78,13 +76,14 @@
           console.log('begin user',user);
           let notes = (await axios.get(`${API}/users/${user.id}/notes`)).data;
           console.log('begin notes',notes);
-          // ///put this in create...this only appears on 2nd refresh if 1st load is less than 5 or less
-          // const fakerNote = faker.hacker.phrase();
-          // //console.log('this is note', fakerNote);
-          // const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
-          // console.log('newNote', note.text)
-          // this.setState( { notes: [...this.state.notes, note ] },
-          //   );
+          ///put this in create...this only appears on 2nd refresh if 1st load is less than 5 or less
+          //const fakerNote = faker.hacker.phrase();
+          //console.log('this is note', fakerNote);
+          //const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
+          //const note = (await axios.post(`${API}/users/${user.id}/notes`, { text: `${fakerNote}`})).data;
+          //console.log('newNote', note.text)
+         // this.setState( { notes: [...this.state.notes, note ] },
+          //  );
 
           this.setState({ notes });
           this.setState({
@@ -95,30 +94,31 @@
         }
 
         //create new note by pulling note for Faker
-        //put this in create...this only appears on 2nd refresh if 1st load is less than 5 or less
-        async create(){
-        const fakerNote = faker.hacker.phrase();
-        //console.log('this is note', fakerNote);
-        const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
-        console.log('newNote', note.text)
-        this.setState( { notes: [...this.state.notes, note ] },
-          );
+        //put this in create...this only appears on 2nd refresh(if in CDM) if 1st load is less than 5 or less
+        // async create(){
+        // const fakerNote = faker.hacker.phrase();
+        // console.log('this is note', fakerNote);
+        // const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
+        // console.log('newNote', note.text)
+        // this.setState( { notes: [...this.state.notes, note ] },
+        //   );
+        //   this.setState({ notes });
+        //    console.log(this.state);
+        // }
 
-
-          // this.setState({ notes });
-          //  console.log(this.state);
+        addNote = async() => {
+          const fakerNote = faker.hacker.phrase();
+          console.log('this is note', fakerNote);
+          const note = (await axios.post(`${API}/users/${user.id}/notes`, {id: `${Math.random() }`, text: `${fakerNote}`})).data;
+          console.log('newNote', note.text)
+          this.setState( { notes: [...this.state.notes, note ] });
+          this.setState({ notes });
+          console.log(this.state);
          }
-
-
-
-
-
-
-
 
         render(){
           const { error, user, companies, vacations, followingCompanies, notes } = this.state;
-          const { create } = this.state;
+          const { addNote } = this;
           console.log('render', this.state);
 
           return (
@@ -126,6 +126,8 @@
               <h1>The Acme Random Life</h1>
               Welcome { user.fullName } to your Random Life!
               <div className='error'>{ error }</div>
+              <h2>notes ({ notes.length })</h2>
+              <button onClick={ ()=> addNote.notes }>Add a Random Note</button>
               <Note user = { user } notes = { notes } error = { error} />
             </div>
           );
