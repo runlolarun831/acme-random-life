@@ -34,11 +34,15 @@
       };
 
       const Note = ({user, notes, error, create})=> {
+        console.log('notes in Note',{notes});
+        console.log('error in Note', {error});
+        console.log('user in Note',{user});
         return (
           <div>
             <h2>notes ({ notes.length })</h2>
-            {//<button onClick={ notes.create }>Add a Random Note</button>
-          }
+            <button onClick={ notes.create }>Add a Random Note</button>
+
+
           </div>
         )
        };
@@ -64,12 +68,6 @@
           console.log('begin user',user);
           let notes = (await axios.get(`${API}/users/${user.id}/notes`)).data;
           console.log('begin notes',notes);
-          const fakerNote = faker.hacker.phrase();//test if it works
-          console.log('this is note', fakerNote);
-          const note = (await axios.post(`${API}/users/${user.id}/notes`, { text: `${fakerNote}`})).data;
-          console.log('newNote', note.text)
-          this.setState( { notes: [...this.state.notes, note ] },
-            );
           this.setState({ notes });
           this.setState({
             user,
@@ -79,15 +77,21 @@
         }
 
         //create new note by pulling note for Faker
-        // async create(note){
-        //   const FakerNote = faker.hacker.phrase();
-        //   console.log(FakerNote);
-        //   const note = (await axios.post(`${API}/users/${this.state.user.id}/notes`, {FakerNote})).data;
+        async create(){
+          const FakerNote = faker.hacker.phrase();
+          console.log('this is note', fakerNote);
+          const note = (await axios.post(`${API}/users/${user.id}/notes`, { text: `${fakerNote}`})).data;
+          console.log('newNote', note.text)
         //   this.setState( { notes: [...this.state.notes, note ] };
         //     );
         //   this.setState({ notes });
         //   console.log(this.state);
-        // }
+         }
+          //code to create and new Note -need to move it to another component
+          //const fakerNote = faker.hacker.phrase();//test if it works
+          //console.log('this is note', fakerNote);
+          //const note = (await axios.post(`${API}/users/${user.id}/notes`, { text: `${fakerNote}`})).data;
+          //console.log('newNote', note.text)
 
 
 
@@ -97,12 +101,13 @@
           const { error, user, companies, vacations, followingCompanies, notes } = this.state;
           const { create } = this.state;
           console.log('render', this.state);
+
           return (
             <div>
               <h1>The Acme Random Life</h1>
               Welcome { user.fullName } to your Random Life!
               <div className='error'>{ error }</div>
-              <Note notes = { notes } />
+              <Note user = { user } notes = { notes } error = { error} />
             </div>
           );
         }
