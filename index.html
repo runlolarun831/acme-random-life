@@ -45,8 +45,7 @@
                 return (
                   <div key={note.id}>
                     <div>{note.text}</div>
-                    <div>hmmm?</div>
-                    <button onClick={ ()=> destroyNote(notes) }>Destroy</button>
+                    <button onClick={ ()=> destroyNote(notes.id) }>Destroy is not working</button>
                   </div>
                 );
               })
@@ -111,24 +110,27 @@
         }
 
         addNote = async({user}) => {
-          user = this.state;
+          //user = this.state;
           console.log({user});
           const fakerNote = faker.hacker.phrase();
           console.log('this is note', fakerNote);
-          const note = (await axios.post(`${API}/users/${user.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
+          //const note = (await axios.post(`${API}/users/${user.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
+          const note = (await axios.post(`${API}/users/${this.state.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
           console.log('newNote', note.text);
           this.setState( { notes: [...this.state.notes, note ] });
           //this.setState({ notes });
-          console.log(this.state);
+          console.log('hola',this.state);
          }
 
          //error!!!! destroyNote is not a function
          destroyNote = async({user, notes}) => {
-          user = this.state;
+          //user = this.state;
           console.log({user});
           console.log('notes in destroyNote', {notes});
-          await axios.delete(`${API}/users/${user.user.id}/notes/{ notes[0].id }`);
-
+          const destroyedNote =await axios.delete(`${API}/users/${this.state.user.id}/notes/{ notes[0].id }`);
+          this.setState( { notes: [...this.state.notes, note ] })
+          console.log(destroyedNote);
+          console.log('didwe destroy',this.state);
          }
 
         render(){
@@ -145,6 +147,7 @@
               <button onClick={ ()=> addNote(notes) }>Add a Random Note</button>
               <Note user = { user } notes = { notes } error = { error} />
               <hr />
+              <h2>followingCompanies ({ followingCompanies.length })</h2>
               <button>Add a Random followingCompanies</button>
               <Following user = { user } followingCompanies = {followingCompanies} error = {error} />
             </div>
