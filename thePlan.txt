@@ -8,7 +8,7 @@ no routes. video example stays on same page
 look at week 9 for examples
 10fetchUsers-
 
-notes first
+notes first---need to fix destroy note
 followings
 vacations
 
