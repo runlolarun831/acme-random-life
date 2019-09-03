@@ -7,6 +7,21 @@
   <script src='https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js'></script>
   <style>
+    .error {
+      color: red;
+      margin: 1rem;
+    }
+    button {
+      height: 2rem;
+      font-size: 0.75rem;
+      margin: 0.5rem;
+    }
+    hr {
+      color: tomato;
+    }
+    .destroy {
+      ;
+    }
   </style>
 
   </head>
@@ -45,7 +60,7 @@
                 return (
                   <div key={note.id}>
                     <div>{note.text}</div>
-                    <button onClick={ ()=> destroyNote(notes.id) }>Destroy is not working</button>
+                    <button className='destroy' onClick={ ()=> destroyNote(notes.id) }>Destroy is not working</button>
                   </div>
                 );
               })
@@ -110,16 +125,19 @@
         }
 
         addNote = async({user}) => {
-          //user = this.state;
           console.log({user});
           const fakerNote = faker.hacker.phrase();
           console.log('this is note', fakerNote);
-          //const note = (await axios.post(`${API}/users/${user.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
-          const note = (await axios.post(`${API}/users/${this.state.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
-          console.log('newNote', note.text);
-          this.setState( { notes: [...this.state.notes, note ] });
-          //this.setState({ notes });
-          console.log('hola',this.state);
+          try {
+            const note = (await axios.post(`${API}/users/${this.state.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
+            console.log('newNote', note.text);
+            this.setState( { notes: [...this.state.notes, note ] });
+            this.setState({ notes });
+            console.log('hola',this.state);
+          }
+          catch(ex) {
+            this.setState({ error: ex.response.data.message });
+          }
          }
 
          //error!!!! destroyNote is not a function
