@@ -75,8 +75,18 @@
             }
           </div>
         ) }
-      const Vacation = ({user, vacations, addVacation}) => {
 
+      const Vacation = ({user, vacations, addVacation, destroyVacation}) => {
+        // const newFormatVacations = vacations.map( vacay => {
+        //   let oldStart = moment(vacay.startDate, 'YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+        //   let newStart = moment(oldStart.format('DD/MM/YYYY'));
+        //   vacay.startDate = newStart;
+        //   let oldEnd = moment(vacay.endDate, 'YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+        //   let newEnd = moment(oldEnd.format('DD/MM/YYYY'));
+        //   vacay.endDate = newEnd;
+        //   return vacay;
+        // })
+        // console.log('nV', newVacations);
 
         return (
           <div>
@@ -88,7 +98,7 @@
                       <div>{ vacay.startDate}</div><div>to</div>
                       <div>{ vacay.endDate}</div>
                       </span>
-                    <button className='destroy' onClick={ ()=> destroyVacation(vacation.id) }>Destroy is not working</button>
+                    <button className='destroy' onClick={ ()=> destroyVacation(vacay.id) }>Destroy is not working</button>
                   </div>
                 )
               })
@@ -107,9 +117,9 @@
             vacations: [],
             notes: [],
             followingCompanies: [],
-            error: ''
+            error: '',
           };
-          //this.create = this.create.bind(this);
+          this.addNote = this.addNote.bind(this);
         }
         //this is where the data first comes in -set state
         async componentDidMount(){
@@ -117,7 +127,6 @@
           console.log('begin user',user);
           console.log('begin user',user.id);
           let notes = (await axios.get(`${API}/users/${user.id}/notes`)).data;
-          // console.log('begin notes',notes);
           let vacations = (await axios.get(`${API}/users/${user.id}/vacations`)).data;
           console.log('begin vacations', vacations);
           // let followingCompanies = (await axios.get(`${API}/users/${user.id}/followingCompanies`)).data;
@@ -140,23 +149,19 @@
             user,
             notes,
             vacations,
-            //error
+            //error  //when i put in error I get uncaught(promise)???
             //followingCompanies,
           });
           console.log('Begin of State', this.state);
         }
 
-        addNote = async({user, error}) => {
-          this.setState({ error: ''});
-          //console.log({user});
+        addNote = async({user, error, notes}) => {
+          console.log(this.state.notes.length);
           const fakerNote = faker.hacker.phrase();
-          //console.log('this is note', fakerNote);
           try {
             const note = (await axios.post(`${API}/users/${this.state.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
-            //console.log('newNote', note.text);
             this.setState( { notes: [...this.state.notes, note ] });
             this.setState({ notes });
-            //console.log('hola',this.state);
           }
           catch(ex) {
             this.setState({ error: ex.response.data.message });
@@ -164,14 +169,16 @@
          }
 
         destroyNote = async(id) => {
-          await axios.delete(`${API}/users/${this.state.user.id}/notes/${ id }`); //works the back
+          await axios.delete(`${API}/users/${this.state.user.id}/notes/${ id }`);
           const notes = this.state.notes.filter( item =>{
             return item.id !== id;
           })
-          this.setState( { notes: notes}) //works frontend update state
+          this.setState( { notes: notes})
+          this.setState({ error: ''});
         }
 
         addVacation = async( {user, vacations}) => {
+          this.setState({ error: ''});
           const practStartDate = moment();
           const startDate = practStartDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
           const practEndDate = moment(practStartDate).add(2,'d');
@@ -187,6 +194,14 @@
           }
          }
 
+         destroyVacation = async(id) => {
+          await axios.delete(`${API}/users/${this.state.user.id}/vacations/${ id }`);
+          const vacations = this.state.vacations.filter( item =>{
+            return item.id !== id;
+          })
+          this.setState( { vacations: vacations})
+        }
+
          addFollowingCompany = async({user, followingCompanies, companies}) => {
            console.log('im in addFC', {followingCompanies});
            const fakerCompany = faker.company.companyName();
@@ -195,7 +210,7 @@
 
         render(){
           const { error, user, companies, vacations, followingCompanies, notes } = this.state;
-          const { addNote, destroyNote, addVacation } = this;
+          const { addNote, destroyNote, addVacation, destroyVacation } = this;
           console.log('render', this.state);
 
           return (
@@ -203,7 +218,7 @@
               <h1>The Acme Random Life</h1>
               Welcome { user.fullName } to your Random Life!
               <div className='error'>{ error }</div>
-              <h2>notes ({ notes.length })</h2>
+              <h2>notes ( { notes.length} )</h2>
 
               <button onClick={ ()=> addNote(notes) }>Add a Random Note</button>
               <Note user = { user } notes = { notes } error = { error} destroyNote = { destroyNote } />
@@ -215,9 +230,9 @@
               <Following user = { user } followingCompanies = { followingCompanies } companies = { companies } error = { error } />
               <hr />
 
-              <h2>vacations ({ vacations.length })</h2>
+              <h2>vacations ( {vacations.length} )</h2>
               <button onClick={ ()=> addVacation(vacations) }>Add a Random Vacation</button>
-              <Vacation user = { user } vacations = { vacations} error = { error}  />
+              <Vacation user = { user } vacations = { vacations} error = { error}  destroyVacation = {destroyVacation} />
             </div>
           );
         }
