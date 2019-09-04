@@ -8,17 +8,21 @@ no routes. video example stays on same page
 look at week 9 for examples
 10fetchUsers-
 
-notes first---need to fix destroy note
-followings
-vacations
+DONE 1.notes first---need to fix destroy note
+2.vacations
+3.followings
 
-            {
-              notes.map( (note, idx)  => {
+
+
+
+
+
+              followingCompanies.map( (followed, idx)  => {
                 return (
-                  <div key={user.id}>
-                    {note}
+                  <div key={followed.companyId}>
+                    <div>{followed.companyId}</div>
+                    <div>hmmm?</div>
                     <button>Destroy</button>
                   </div>
                 );
               })
-            }
