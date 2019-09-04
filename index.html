@@ -76,13 +76,23 @@
           </div>
         ) }
       const Vacation = ({user, vacations, addVacation}) => {
-        console.log(vacations);
+
+
         return (
           <div>
-              <div>
-                <div>need vacay</div>
-                <button className='destroy' onClick={ ()=> destroyVacation(vacation.id) }>Destroy is not working</button>
-              </div>
+            {
+              vacations.map( (vacay, idx)  => {
+                return (
+                  <div key={vacay.id}>
+                    <span>
+                      <div>{ vacay.startDate}</div><div>to</div>
+                      <div>{ vacay.endDate}</div>
+                      </span>
+                    <button className='destroy' onClick={ ()=> destroyVacation(vacation.id) }>Destroy is not working</button>
+                  </div>
+                )
+              })
+            }
           </div>
         )
        };
@@ -129,7 +139,7 @@
           this.setState({
             user,
             notes,
-            vacations
+            vacations,
             //error
             //followingCompanies,
           });
@@ -137,6 +147,7 @@
         }
 
         addNote = async({user, error}) => {
+          this.setState({ error: ''});
           //console.log({user});
           const fakerNote = faker.hacker.phrase();
           //console.log('this is note', fakerNote);
@@ -162,12 +173,19 @@
 
         addVacation = async( {user, vacations}) => {
           const practStartDate = moment();
-
+          const startDate = practStartDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
           const practEndDate = moment(practStartDate).add(2,'d');
-          console.log('Vacay= ',practStartDate.format('MM/DD/YYYY'), ' to ', practEndDate.format('MM/DD/YYYY'));//testing format here-will put it in Vacations/
-        }
-
-
+          const endDate = practEndDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+          //console.log('Vacay= ',practStartDate.format('MM/DD/YYYY'), ' to ', practEndDate.format('MM/DD/YYYY'));//testing format here-will put it in Vacations/
+          try {
+            const vacay = (await axios.post(`${API}/users/${this.state.user.id}/vacations`, { startDate: `${ startDate }`, endDate: `${ endDate }`})).data;
+            this.setState( {vacations: [...this.state.vacations, vacay] });
+            this.setState({vacations});
+          }
+          catch(ex) {
+            this.setState({ error: ex.response.data.message });
+          }
+         }
 
          addFollowingCompany = async({user, followingCompanies, companies}) => {
            console.log('im in addFC', {followingCompanies});
@@ -198,7 +216,7 @@
               <hr />
 
               <h2>vacations ({ vacations.length })</h2>
-              <button onClick={ ()=> addVacation(vacations) }>INACTIVEAdd a Random Vacation</button>
+              <button onClick={ ()=> addVacation(vacations) }>Add a Random Vacation</button>
               <Vacation user = { user } vacations = { vacations} error = { error}  />
             </div>
           );
