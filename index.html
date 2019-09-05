@@ -1,5 +1,7 @@
-<!-- Inline Babel script:183 Uncaught TypeError: Cannot read property 'length' of undefined
-in render               <h2>notes ( { notes.length} )</h2> -->
+<!-- POST error for line 134
+followed format for followingCpmpanies POST instructions </h2>
+
+-->
 <html>
   <head>
   <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
@@ -72,6 +74,7 @@ in render               <h2>notes ( { notes.length} )</h2> -->
           </div>
         ) }
       const Vacation = ({user, vacations, addVacation, destroyVacation}) => {
+        //  CODE FOR NEW DATE FORMAT
         // const newFormatVacations = vacations.map( vacay => {
         //   let oldStart = moment(vacay.startDate, 'YYYY-MM-DDTHH:mm:ss.SSS[Z]');
         //   let newStart = moment(oldStart.format('DD/MM/YYYY'));
@@ -92,7 +95,7 @@ in render               <h2>notes ( { notes.length} )</h2> -->
                       <div>{ vacay.startDate}</div><div>to</div>
                       <div>{ vacay.endDate}</div>
                       </span>
-                    <button className='destroy' onClick={ ()=> destroyVacation(vacay.id) }>Destroy is not working</button>
+                    <button className='destroy' onClick={ ()=> destroyVacation(vacay.id) }>Destroy</button>
                   </div>
                 )
               })
@@ -118,29 +121,30 @@ in render               <h2>notes ( { notes.length} )</h2> -->
           const user = await fetchUser();
           console.log('begin user',user);
           console.log('begin user',user.id);
-          let notes = (await axios.get(`${API}/users/${user.id}/notes`)).data;
-          let vacations = (await axios.get(`${API}/users/${user.id}/vacations`)).data;
-          console.log('begin vacations', vacations);
-          // let followingCompanies = (await axios.get(`${API}/users/${user.id}/followingCompanies`)).data;
-          // console.log('begin followings', followingCompanies);
+          let notes = (await axios.get(`${API}/users/${ user.id }/notes`)).data;
+          let vacations = (await axios.get(`${API}/users/${ user.id }/vacations`)).data;
+          let followingCompanies = (await axios.get(`${API}/users/${ user.id }/followingCompanies`)).data;
+          console.log('begin followings', followingCompanies);
           // let companies = (await axios.get(`${API}/companies`)).data;
           // console.log('begin companies', companies);
+
+          // // this is where addFollowingCompany code gets written
           // const randomCompany = (await axios.get(`${API}/companies/random`)).data;
           // console.log('hey random', randomCompany);
           // console.log('this is random id', randomCompany.id);
-          // const company = (await axios.post(`${API}/users/${user.id}/followingCompanies`, {  rating: `${ 1 } `, id: `${ randomCompany.id }`})).data;
-          //console.log(company);
-          //this.setState( { followingCompanies: [...this.state.followingCompanies, company] });
-          //this.setState({ followingCompanies });
-          //let newfollowingCompanies = (await axios.get(`${API}/users/${user.id}/followingCompanies`)).data;
-          //console.log('begin new followings', newfollowingCompanies);
-          //this.setState({ notes });//i think this is redundant
+          // const company = (await axios.post(`${API}/users/${ user.id }/followingCompanies`, {  rating: `${ Math.floor(Math.random() * (5 - 1 +1)) + 1 } `, id: `${ randomCompany.id }`})).data;
+          // console.log(company);
+          // this.setState( { followingCompanies: [...this.state.followingCompanies, company] });
+          // this.setState({ followingCompanies });
+          // let newfollowingCompanies = (await axios.get(`${API}/users/${ user.id }/followingCompanies`)).data;
+          // //console.log('begin new followings', newfollowingCompanies);
+          // //this.setState({ notes });//i think this is redundant
           this.setState({
             user,
             notes,
             vacations,
             //error  //when i put in error I get uncaught(promise)???
-            //followingCompanies,
+            followingCompanies,
           });
           console.log('Begin of State', this.state);
         }
@@ -148,7 +152,7 @@ in render               <h2>notes ( { notes.length} )</h2> -->
           console.log(this.state.notes.length);
           const fakerNote = faker.hacker.phrase();
           try {
-            const note = (await axios.post(`${API}/users/${this.state.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
+            const note = (await axios.post(`${API}/users/${ this.state.user.id }/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
             this.setState( { notes: [...this.state.notes, note ] });
             this.setState({ notes });
           }
@@ -157,20 +161,20 @@ in render               <h2>notes ( { notes.length} )</h2> -->
           }
          }
         destroyNote = async(id) => {
-          await axios.delete(`${API}/users/${this.state.user.id}/notes/${ id }`);
+          await axios.delete(`${API}/users/${ this.state.user.id }/notes/${ id }`);
           const notes = this.state.notes.filter( item =>{
             return item.id !== id;
           })
           this.setState( { notes: notes})
           this.setState({ error: ''});
         }
-        addVacation = async( {user}) => {
-          this.setState({ error: ''});
-          const practStartDate = moment();
+        addVacation = async({ user }) => {
+          this.setState({ error: '' });
+          const now = moment();
+          const practStartDate = moment(now).add(Math.floor(Math.random() * (365 - 1 +1)) + 1 ,'d');;
           const startDate = practStartDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
           const practEndDate = moment(practStartDate).add(Math.floor(Math.random() * (28 - 1 +1)) + 1 ,'d');
           const endDate = practEndDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
-          //console.log('Vacay= ',practStartDate.format('MM/DD/YYYY'), ' to ', practEndDate.format('MM/DD/YYYY'));//testing format here-will put it in Vacations/
           try {
             const vacay = (await axios.post(`${API}/users/${this.state.user.id}/vacations`, { startDate: `${ startDate }`, endDate: `${ endDate }`})).data;
             this.setState( {vacations: [...this.state.vacations, vacay] });
@@ -181,14 +185,14 @@ in render               <h2>notes ( { notes.length} )</h2> -->
           }
          }
          destroyVacation = async(id) => {
-          await axios.delete(`${API}/users/${this.state.user.id}/vacations/${ id }`);
+          await axios.delete(`${API}/users/${ this.state.user.id }/vacations/${ id }`);
           const vacations = this.state.vacations.filter( item =>{
             return item.id !== id;
           })
           this.setState( { vacations: vacations})
         }
-         addFollowingCompany = async({user, followingCompanies, companies}) => {
-           console.log('im in addFC', {followingCompanies});
+         addFollowingCompany = async({ user, followingCompanies, companies }) => {
+           console.log('im in addFC', { followingCompanies });
            const fakerCompany = faker.company.companyName();
            console.log(fakerCompany);
          }
@@ -201,9 +205,9 @@ in render               <h2>notes ( { notes.length} )</h2> -->
               <h1>The Acme Random Life</h1>
               Welcome { user.fullName } to your Random Life!
               <div className='error'>{ error }</div>
-              <h2>notes ( { notes.length} )</h2>
+              <h2>notes ( { notes.length } )</h2>
               <button onClick={ ()=> addNote(notes) }>Add a Random Note</button>
-              <Note user = { user } notes = { notes } error = { error} destroyNote = { destroyNote } />
+              <Note user = { user } notes = { notes } error = { error } destroyNote = { destroyNote } />
               <hr />
               <h2>followingCompanies ({ followingCompanies.length })</h2>
               <button onClick={ ()=> addFollowingCompany(followingCompanies) }>INACTIVEAdd a Random followingCompanies</button>
@@ -211,7 +215,7 @@ in render               <h2>notes ( { notes.length} )</h2> -->
               <hr />
               <h2>vacations ( {vacations.length} )</h2>
               <button onClick={ ()=> addVacation(vacations) }>Add a Random Vacation</button>
-              <Vacation user = { user } vacations = { vacations} error = { error}  destroyVacation = {destroyVacation} />
+              <Vacation user = { user } vacations = { vacations } error = { error }  destroyVacation = { destroyVacation } />
             </div>
           );
         }
