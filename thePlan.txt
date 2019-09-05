@@ -14,11 +14,6 @@ DONE 1.notes first---need to fix destroy note
 
 
 
-              {//<h2>notes ({ notes.length })</h2>
-            }
-
-              {//<h2>followingCompanies ({ followingCompanies.length })</h2>
-              }
 
     // {
             //   followingCompanies.map( (followed, idx)  => {

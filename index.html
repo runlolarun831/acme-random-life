@@ -1,3 +1,5 @@
+<!-- Inline Babel script:183 Uncaught TypeError: Cannot read property 'length' of undefined
+in render               <h2>notes ( { notes.length} )</h2> -->
 <html>
   <head>
   <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
@@ -19,7 +21,6 @@
     hr {
       color: tomato;
     }
-
   </style>
 
   </head>
@@ -28,7 +29,6 @@
     </div>
     <script type='text/babel'>
       const API = 'https://acme-users-api-rev.herokuapp.com/api';
-
       const fetchUser = async ()=> {
         const storage = window.localStorage;
         const userId = storage.getItem('userId');
@@ -45,15 +45,14 @@
         storage.setItem('userId', user.id);
         return  user;
       };
-
-      const Note = ({user, notes, error, AddNote, destroyNote})=> {
+      const Note = ({user, notes, error, addNote, destroyNote})=> {
         return (
           <div>
             {
               notes.map( (note, idx)  => {
                 return (
-                  <div key={ note.id }>
-                    <div>{ note.text }</div>
+                  <div key={note.id}>
+                    <div>{note.text}</div>
                     <button className='destroy' onClick={ ()=> destroyNote(note.id) }>Destroy</button>
                   </div>
                 );
@@ -62,19 +61,17 @@
           </div>
         )
        };
-
-       const Following = ({ user, followingCompanies, companies })=> {
-        console.log('user in Following',user);
-        console.log('followingCompanies in Following',{ followingCompanies });
+       const Following = ({user, followingCompanies, companies, })=> {
+        //console.log('user in Following',user);
+        //console.log('followingCompanies in Following',{followingCompanies});
         //console.log('companies in Following', {companies});
-
         return (
           <div>
-
+            {
+            }
           </div>
         ) }
-
-      const Vacation = ({ user, vacations, addVacation, destroyVacation }) => {
+      const Vacation = ({user, vacations, addVacation, destroyVacation}) => {
         // const newFormatVacations = vacations.map( vacay => {
         //   let oldStart = moment(vacay.startDate, 'YYYY-MM-DDTHH:mm:ss.SSS[Z]');
         //   let newStart = moment(oldStart.format('DD/MM/YYYY'));
@@ -85,16 +82,15 @@
         //   return vacay;
         // })
         // console.log('nV', newVacations);
-
         return (
           <div>
             {
               vacations.map( (vacay, idx)  => {
                 return (
-                  <div key={ vacay.id }>
+                  <div key={vacay.id}>
                     <span>
-                      <div>{ vacay.startDate }</div><div>to</div>
-                      <div>{ vacay.endDate }</div>
+                      <div>{ vacay.startDate}</div><div>to</div>
+                      <div>{ vacay.endDate}</div>
                       </span>
                     <button className='destroy' onClick={ ()=> destroyVacation(vacay.id) }>Destroy is not working</button>
                   </div>
@@ -104,8 +100,6 @@
           </div>
         )
        };
-
-
       class App extends React.Component{
         constructor(){
           super();
@@ -115,39 +109,43 @@
             vacations: [],
             notes: [],
             followingCompanies: [],
-            error: ''
+            error: '',
           };
-          // this.addNote = this.addNote.bind(this);
-          // this.deleteNote = this.deleteNote.bind(this);
-          // this.addVacation = this.addVacation.bind(this);
-          // this.deleteVacation = this.deleteVacation.bind(this);
-          // this.addFollowingCompany= this.addFollowingCompany.bind(this);
-          // this.destroyFollowingCompany = this.destroyFollowingCompany.bind(this);
+          this.addNote = this.addNote.bind(this);
         }
         //this is where the data first comes in -set state
         async componentDidMount(){
           const user = await fetchUser();
           console.log('begin user',user);
           console.log('begin user',user.id);
-          let notes = (await axios.get(`${API}/users/${ user.id }/notes`)).data;
-          let vacations = (await axios.get(`${API}/users/${ user.id }/vacations`)).data;
-          //console.log('begin vacations', vacations);
-          let followingCompanies = (await axios.get(`${API}/users/${ user.id }/followingCompanies`)).data;
-          console.log('begin followings', followingCompanies);
-          let companies = (await axios.get(`${API}/companies`)).data;
-          console.log('begin companies', companies);
-
+          let notes = (await axios.get(`${API}/users/${user.id}/notes`)).data;
+          let vacations = (await axios.get(`${API}/users/${user.id}/vacations`)).data;
+          console.log('begin vacations', vacations);
+          // let followingCompanies = (await axios.get(`${API}/users/${user.id}/followingCompanies`)).data;
+          // console.log('begin followings', followingCompanies);
+          // let companies = (await axios.get(`${API}/companies`)).data;
+          // console.log('begin companies', companies);
+          // const randomCompany = (await axios.get(`${API}/companies/random`)).data;
+          // console.log('hey random', randomCompany);
+          // console.log('this is random id', randomCompany.id);
+          // const company = (await axios.post(`${API}/users/${user.id}/followingCompanies`, {  rating: `${ 1 } `, id: `${ randomCompany.id }`})).data;
+          //console.log(company);
+          //this.setState( { followingCompanies: [...this.state.followingCompanies, company] });
+          //this.setState({ followingCompanies });
+          //let newfollowingCompanies = (await axios.get(`${API}/users/${user.id}/followingCompanies`)).data;
+          //console.log('begin new followings', newfollowingCompanies);
+          //this.setState({ notes });//i think this is redundant
           this.setState({
             user,
             notes,
             vacations,
             //error  //when i put in error I get uncaught(promise)???
-            followingCompanies,
+            //followingCompanies,
           });
           console.log('Begin of State', this.state);
         }
-
-        addNote = async({ user, error, notes }) => {
+        addNote = async({user, error}) => {
+          console.log(this.state.notes.length);
           const fakerNote = faker.hacker.phrase();
           try {
             const note = (await axios.post(`${API}/users/${this.state.user.id}/notes`, {id: `${ fakerNote.id }`, text: `${ fakerNote }`})).data;
@@ -158,17 +156,15 @@
             this.setState({ error: ex.response.data.message });
           }
          }
-
         destroyNote = async(id) => {
-          await axios.delete(`${API}/users/${ this.state.user.id }/notes/${ id }`);
+          await axios.delete(`${API}/users/${this.state.user.id}/notes/${ id }`);
           const notes = this.state.notes.filter( item =>{
             return item.id !== id;
           })
-          this.setState({ notes: notes })
-          this.setState({ error: '' });
+          this.setState( { notes: notes})
+          this.setState({ error: ''});
         }
-
-        addVacation = async( {user, vacations}) => {
+        addVacation = async( {user}) => {
           this.setState({ error: ''});
           const practStartDate = moment();
           const startDate = practStartDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
@@ -184,63 +180,42 @@
             this.setState({ error: ex.response.data.message });
           }
          }
-
-        destroyVacation = async(id) => {
+         destroyVacation = async(id) => {
           await axios.delete(`${API}/users/${this.state.user.id}/vacations/${ id }`);
           const vacations = this.state.vacations.filter( item =>{
             return item.id !== id;
-         })
+          })
           this.setState( { vacations: vacations})
         }
-
-        //  addFollowingCompany = async({user, followingCompanies, companies}) => {
-        //   const randomCompany = (await axios.get(`${API}/companies/random`)).data;
-        //   console.log('hey random', randomCompany);
-        //   console.log('this is random id', randomCompany.id);
-        //   const followedCompany = (await axios.post(`${API}/users/${ user.id }/followingCompanies`, {  rating: `${ 1 } `, id: `${ randomCompany.id }`})).data;
-
-        //   //console.log(company);
-        //   //this.setState( { followingCompanies: [...this.state.followingCompanies, company] });
-        //   //this.setState({ followingCompanies });
-
-        //   //let newfollowingCompanies = (await axios.get(`${API}/users/${user.id}/followingCompanies`)).data;
-        //   //console.log('begin new followings', newfollowingCompanies);
-        //   //this.setState({ notes });//i think this is redundant
-        //  }
-
-
-
-
+         addFollowingCompany = async({user, followingCompanies, companies}) => {
+           console.log('im in addFC', {followingCompanies});
+           const fakerCompany = faker.company.companyName();
+           console.log(fakerCompany);
+         }
         render(){
           const { error, user, companies, vacations, followingCompanies, notes } = this.state;
-          const { addNote, destroyNote, addVacation, destroyVacation, addFollowingCompany } = this;
+          const { addNote, destroyNote, addVacation, destroyVacation } = this;
           console.log('render', this.state);
-
           return (
             <div>
               <h1>The Acme Random Life</h1>
               Welcome { user.fullName } to your Random Life!
               <div className='error'>{ error }</div>
-
-              <h2>notes ({ notes })</h2>
+              <h2>notes ( { notes.length} )</h2>
               <button onClick={ ()=> addNote(notes) }>Add a Random Note</button>
-              <Note user = { user } notes = { notes } error = { error } destroyNote = { destroyNote } />
+              <Note user = { user } notes = { notes } error = { error} destroyNote = { destroyNote } />
               <hr />
-
-
-              <h2>followingCompanies ({ followingCompanies })</h2>
+              <h2>followingCompanies ({ followingCompanies.length })</h2>
               <button onClick={ ()=> addFollowingCompany(followingCompanies) }>INACTIVEAdd a Random followingCompanies</button>
               <Following user = { user } followingCompanies = { followingCompanies } companies = { companies } error = { error } />
               <hr />
-
-              <h2>vacations ({ vacations })</h2>
+              <h2>vacations ( {vacations.length} )</h2>
               <button onClick={ ()=> addVacation(vacations) }>Add a Random Vacation</button>
-              <Vacation user = { user } vacations = { vacations } error = { error }  destroyVacation = { destroyVacation } />
+              <Vacation user = { user } vacations = { vacations} error = { error}  destroyVacation = {destroyVacation} />
             </div>
           );
         }
       }
-
       ReactDOM.render(<App />, document.querySelector('#root'));
     </script>
   </body>
