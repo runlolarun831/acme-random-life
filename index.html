@@ -168,7 +168,7 @@ in render               <h2>notes ( { notes.length} )</h2> -->
           this.setState({ error: ''});
           const practStartDate = moment();
           const startDate = practStartDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
-          const practEndDate = moment(practStartDate).add(2,'d');
+          const practEndDate = moment(practStartDate).add(Math.floor(Math.random() * (28 - 1 +1)) + 1 ,'d');
           const endDate = practEndDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
           //console.log('Vacay= ',practStartDate.format('MM/DD/YYYY'), ' to ', practEndDate.format('MM/DD/YYYY'));//testing format here-will put it in Vacations/
           try {
